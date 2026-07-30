@@ -1,0 +1,149 @@
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tobatlah</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* ===== BACKGROUND =====
+     Ganti bagian background di bawah ini dengan gambar milikmu sendiri.
+     Caranya:
+     1. Simpan gambar background (misal dari halaman Facebook tersebut, download manual) 
+        dengan nama "background.jpg" di folder yang sama dengan file HTML ini.
+     2. Ganti baris "background: linear-gradient(...)" menjadi:
+        background: url('background.jpg') center center / cover no-repeat;
+  */
+  body {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+  }
+
+  .overlay {
+    position: relative;
+    z-index: 2;
+    background: rgba(0,0,0,0.35);
+    padding: 40px 30px;
+    border-radius: 20px;
+    max-width: 90%;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  p {
+    font-size: 1rem;
+    opacity: 0.85;
+    margin-bottom: 25px;
+  }
+
+  #unmuteBtn {
+    padding: 12px 28px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 30px;
+    background: #ffffff;
+    color: #203a43;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+  }
+
+  #unmuteBtn:hover {
+    background: #cfd8dc;
+  }
+
+  /* Player YouTube disembunyikan dari tampilan, tapi tetap memutar suara */
+  #playerWrapper {
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="overlay">
+    <h1>🤍 Tobatlah 🤍</h1>
+    <p>Maher Zain — Insya Allah</p>
+    <p id="hint" style="font-size:0.85rem; opacity:0.7;">(sentuh/klik layar untuk menyalakan suara)</p>
+  </div>
+
+  <div id="playerWrapper">
+    <div id="player"></div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    let player;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '1',
+        width: '1',
+        videoId: 'KfXIF2Mm2Kc', // Maher Zain - Insya Allah (Official Music Video)
+        playerVars: {
+          autoplay: 1,
+          mute: 1,      // Browser modern hanya izinkan autoplay jika muted
+          loop: 1,
+          playlist: 'KfXIF2Mm2Kc',
+          controls: 0
+        },
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
+
+    function unmuteAndPlay() {
+      if (player) {
+        player.unMute();
+        player.setVolume(100);
+        player.playVideo();
+      }
+      const hint = document.getElementById('hint');
+      if (hint) hint.style.display = 'none';
+    }
+
+    // Sentuhan/klik pertama di mana saja pada halaman akan menyalakan suara.
+    // Ini memanfaatkan aturan browser yang mengizinkan audio setelah ada
+    // interaksi user, tanpa perlu tombol khusus yang harus dicari.
+    let unmuted = false;
+    function firstInteraction() {
+      if (!unmuted) {
+        unmuted = true;
+        unmuteAndPlay();
+      }
+    }
+    document.addEventListener('click', firstInteraction);
+    document.addEventListener('touchstart', firstInteraction);
+    document.addEventListener('keydown', firstInteraction);
+    document.addEventListener('scroll', firstInteraction);
+  </script>
+
+</body>
+</html>
